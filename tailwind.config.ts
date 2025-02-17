@@ -9,7 +9,8 @@ export default {
   theme: {
     extend: {
       colors: {
-        "off-violet": "#DF2BFF"
+        "off-violet": "#DF2BFF",
+        "off-black": "#010101"
       },
     },
   },

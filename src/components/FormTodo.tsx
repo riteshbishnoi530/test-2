@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface FormValues {
   firstName: string;
@@ -9,7 +9,7 @@ interface FormValues {
   confirmPassword: string;
 }
 
-const Todo: any = () => {
+const FormTodo: any = () => {
   const form: FormValues = {
     firstName: "",
     email: "",
@@ -21,7 +21,18 @@ const Todo: any = () => {
   const [formData, setFormData] = useState<FormValues[]>([]);
   const [formValues, setFormValues] = useState<FormValues>(form);
   const [error, setError] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  useEffect(() => {
+    const storedFormData = localStorage.getItem('formData');
+    if (storedFormData) {
+      setFormData(JSON.parse(storedFormData));
+    }
+  }, []);
+  
+  useEffect(() => {
+    localStorage.setItem('formData', JSON.stringify(formData));
+  }, [formData]);
   const EmailRegex =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
@@ -59,42 +70,25 @@ const Todo: any = () => {
         onSubmit={handlerSubmit}
       >
         <div className="mb-4 w-full">
-          <label htmlFor="first-name" className="block mb-2">
-            {error && formValues.firstName.length === 0 ? (
-              <p className="text-red-900 leading-[30px]">
-                First name is required
-              </p>
-            ) : (
-              <p className="text-black-light leading-[30px]">First name</p>
-            )}
-          </label>
           <input
+            placeholder="Name"
             type="text"
-            id="first-name"
-            name="first-name"
             value={formValues.firstName}
             onChange={(e) =>
               setFormValues({ ...formValues, firstName: e.target.value })
             }
-            className="w-full px-3 py-2 border !text-black border-gray-300 rounded"
+            className="outline-none w-full px-3 py-2 border !text-black border-gray-300 rounded"
           />
+          {error && !formValues.firstName ? (
+            <p className="text-red-500 text-base font-normal">
+              Name is required
+            </p>
+          ) : ""}
+
         </div>
         <div className="mb-4 w-full">
-          <label htmlFor="email" className="block  mb-2">
-            {error && formValues.email.length === 0 ? (
-              <p className="text-red-900 leading-[30px]">Email is required</p>
-            ) : !EmailRegex.test(formValues.email) &&
-              formValues.email.length > 0 ? (
-              <p className="text-red-900 leading-[30px]">Email is not valid</p>
-            ) : formData.some((item: FormValues) => item.email === formValues.email) ? (
-              <p className="text-red-900 leading-[30px]">
-                Email already exists
-              </p>
-            ) : (
-              <p className="text-black-light leading-[30px]">Email</p>
-            )}
-          </label>
           <input
+            placeholder="Email"
             type="email"
             id="email"
             name="email"
@@ -102,149 +96,165 @@ const Todo: any = () => {
             onChange={(e) =>
               setFormValues({ ...formValues, email: e.target.value })
             }
-            className="w-full px-3 py-2 border !text-black border-gray-300 rounded"
+            className="outline-none w-full px-3 py-2 border !text-black border-gray-300 rounded"
           />
+          {error && !formValues.email ? (
+            <p className="text-red-500 text-base font-normal">
+              Email is required
+            </p>
+          ) : !EmailRegex.test(formValues.email) && formValues.email.length > 0 ? <p className="text-red-500 text-base font-normal">
+            Email is not valid
+          </p> : ""}
+
         </div>
         <div className="mb-4 w-full">
-          <label htmlFor="phone" className="block mb-2">
-            {error && formValues.phone.length === 0 ? (
-              <p className="text-red-900 leading-[30px]">
-                Phone number is required
-              </p>
-            ) : formValues.phone.length < 10 && formValues.phone.length > 0 ? (
-              <p className="text-red-900 leading-[30px]">
-                Phone number is not valid
-              </p>
-            ) : (
-              <p className="text-black-light leading-[30px]">Phone</p>
-            )}
-          </label>
           <input
+            placeholder="Phone"
             type="number"
             id="phone"
             name="phone"
             value={formValues.phone}
             onChange={(e) =>
-                  setFormValues({ ...formValues, phone: e.target.value })
-                }
-                className="w-full px-3 py-2 border !text-black border-gray-300 rounded"
-              />
-            </div>
-            <div className="mb-4 w-full">
-              <label htmlFor="password" className="block mb-2">
-                {error && formValues.password.length === 0 ? (
-                  <p className="text-red-900 leading-[30px]">
-                    Password is required
-                  </p>
-                ) : formValues.password.length < 6 && formValues.password.length > 0 ? (
-                  <p className="text-red-900 leading-[30px]">
-                    Password must be at least 6 characters
-                  </p>
-                ) : (
-                  <p className="text-black-light leading-[30px]">Password</p>
-                )}
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formValues.password}
-                onChange={(e) =>
-                  setFormValues({ ...formValues, password: e.target.value })
-                }
-                className="w-full px-3 py-2 border !text-black border-gray-300 rounded"
-              />
-            </div>
-            <div className="mb-4 w-full">
-              <label htmlFor="confirm-password" className="block mb-2">
-                {error && formValues.confirmPassword.length === 0 ? (
-                  <p className="text-red-900 leading-[30px]">
-                    Confirm password is required
-                  </p>
-                ) : formValues.confirmPassword !== formValues.password ? (
-                  <p className="text-red-900 leading-[30px]">
-                    Confirm password does not match
-                  </p>
-                ) : (
-                  <p className="text-black-light leading-[30px]">
-                    Confirm password
-                  </p>
-                )}
-              </label>
-              <input
-                value={formValues.confirmPassword}
-                onChange={(e) =>
-                  setFormValues({
-                    ...formValues,
-                    confirmPassword: e.target.value,
-                  })
-                }
-                type="password"
-                id="confirm-password"
-                name="confirm-password"
-                className="w-full px-3 py-2 border !text-black border-gray-300 rounded"
-              />
-            </div>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 mx-auto text-white rounded"
-            >
-              Submit
-            </button>
-          </form>
-    
-          <div className="mt-8">
-            <h3 className="text-xl mb-4 w-full">Submitted Data</h3>
-            <table className="w-full border-collapse">
-              <thead>
-                <tr>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
-                    First Name
-                  </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
-                    Email
-                  </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
-                    Phone
-                  </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
-                    Password
-                  </th>
-                  <th className="border border-gray-300 px-4 py-2 text-left">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {formData.map((data, index) => (
-                  <tr key={index}>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {data.firstName}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {data.email}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {data.phone}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-                      {data.password}
-                    </td>
-                    <td>
-                      <button
-                        onClick={() => handleDelete(index)}
-                        className="bg-red-500 text-white px-4 py-2 rounded"
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+              setFormValues({ ...formValues, phone: e.target.value })
+            }
+            className="outline-none w-full px-3 py-2 border !text-black border-gray-300 rounded"
+          />
+          {error && !formValues.phone ? (
+            <p className="text-red-500 text-base font-normal">
+              Phone is required
+            </p>
+          ) : formValues.phone.length < 10 && formValues.phone.length > 0 ?
+            <p className="text-red-500 text-base font-normal">
+              max 10 digit
+            </p> : ""
+          }
+
         </div>
-      );
-    };
-    
-    export default Todo;
+        <div className="mb-4 w-full">
+          <div className="flex bg-white px-3 py-2 border  border-gray-300 rounded">
+            <input
+              placeholder="Password"
+              type={showPassword ? "text" : "password"}
+              id="password"
+              name="password"
+              value={formValues.password}
+              onChange={(e) =>
+                setFormValues({ ...formValues, password: e.target.value })
+              }
+              className="outline-none w-full !text-black"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-black"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+          {error && !formValues.password ? (
+            <p className="text-red-500 text-base font-normal">
+              Password is required
+            </p>
+          ) : formValues.password.length < 6 && formValues.password.length > 0 ?
+            <p className="text-red-500 text-base font-normal">
+              Password must be at least 6 characters long.
+            </p> : ""
+          }
+        </div>
+        <div className="mb-4 w-full">
+          <div className="flex px-3 py-2 border border-gray-300 rounded bg-white">
+            <input
+              placeholder="Confirm Password"
+              value={formValues.confirmPassword}
+              onChange={(e) =>
+                setFormValues({
+                  ...formValues,
+                  confirmPassword: e.target.value,
+                })
+              }
+              type={showConfirmPassword ? "text" : "password"}
+              id="confirm-password"
+              name="confirm-password"
+              className="outline-none w-full !text-black"
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="text-black"
+            >
+              {showConfirmPassword ? "Hide" : "Show"}
+            </button>
+          </div>
+          {error && !formValues.confirmPassword ? (
+            <p className="text-red-500 text-base font-normal">
+              confirm Password is required
+            </p>
+          ) : formValues.confirmPassword !== formValues.password && formValues.confirmPassword.length > 0 ?
+            <p className="text-red-500 text-base font-normal">
+              password not match
+            </p> : ""
+          }
+        </div>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-500 mx-auto text-white rounded"
+        >
+          Submit
+        </button>
+      </form>
+
+      <div className="mt-8">
+        <h3 className="text-xl mb-4 w-full">Submitted Data</h3>
+        <table className="w-full border-collapse overflow-x-auto">
+          <thead>
+            <tr>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Name
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Email
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Phone
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Password
+              </th>
+              <th className="border border-gray-300 px-4 py-2 text-left">
+                Delete
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {formData.map((data, index) => (
+              <tr key={index}>
+                <td className="border border-gray-300 px-4 py-2">
+                  {data.firstName}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {data.email}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {data.phone}
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  {data.password}
+                </td>
+                <td>
+                  <button
+                    onClick={() => handleDelete(index)}
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default FormTodo;
