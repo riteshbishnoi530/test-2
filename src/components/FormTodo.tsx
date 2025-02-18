@@ -33,8 +33,7 @@ const FormTodo: any = () => {
   useEffect(() => {
     localStorage.setItem('formData', JSON.stringify(formData));
   }, [formData]);
-  const EmailRegex =
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  const EmailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
   const handlerSubmit = (e: any) => {
     e.preventDefault();
@@ -123,7 +122,7 @@ const FormTodo: any = () => {
             <p className="text-red-500 text-base font-normal">
               Phone is required
             </p>
-          ) : formValues.phone.length < 10 && formValues.phone.length > 0 ?
+          ) : formValues.phone.length > 10 && formValues.phone.length > 0 ?
             <p className="text-red-500 text-base font-normal">
               max 10 digit
             </p> : ""

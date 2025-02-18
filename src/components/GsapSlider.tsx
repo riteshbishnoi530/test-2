@@ -33,7 +33,7 @@ const GsapSlider = () => {
 
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % totalSlides);
-    }, 5000);
+    }, 4000);
 
     return () => clearInterval(slideInterval);
   }, [currentSlide, totalSlides]);
@@ -50,7 +50,7 @@ const GsapSlider = () => {
       <div>
         <h1 className="text-center font-medium text-5xl text-white leading-[57.6px] max-w-[830px] mx-auto max-lg:text-4xl max-md:text-3xl font-montserrat">
           Transforming Secure, Modern
-          <span className="text-gardient"> Development</span> with AdaptsAI
+          <span className="bg-gradient-to-r from-off-violet to-sky-400 bg-clip-text text-transparent"> Development</span> with AdaptsAI
         </h1>
       </div>
       <div className="max-w-[1440px] mx-auto justify-between mt-[60px] max-lg:mt-10 max-md:mt-6 px-4">
